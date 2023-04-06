@@ -1,0 +1,261 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            crossorigin="anonymous"
+        />
+        <script src="./scripts/common.js" defer></script>
+        <title>Trang chủ</title>
+    </head>
+    <body>
+        <div class="container-md">
+            <p class="h1 text-center">Chọn nền văn minh của bạn</p>
+            <div class="row align-items-start">
+                <div class="col">
+                    <p class="h3 text-center">Người dùng cũ</p>
+                    <form id="login_form">
+                        <div class="mb-3">
+                            <label for="user_code" class="form-label"
+                                >Nhập mã code hoặc email:</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="user_code"
+                                name="user_code"
+                                required
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label"
+                                >Password:</label
+                            >
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password"
+                                name="password"
+                            />
+                        </div>
+                        <button
+                            class="btn btn-primary form-control"
+                            id="btn_start"
+                            type="submit"
+                        >
+                            Bắt đầu
+                        </button>
+                    </form>
+                </div>
+                <div class="col">
+                    <p class="h3 text-center">Người dùng mới</p>
+                    <form id="register_form">
+                        <div class="mb-3">
+                            <label for="new_user_email" class="form-label"
+                                >Email:
+                                <span
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="right"
+                                    title="Một mã code sẽ được cung cấp nếu bạn không muốn truy cập bằng email của mình."
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-question-circle-fill"
+                                        viewBox="0 0 16 16"
+                                    >
+                                        <path
+                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"
+                                        />
+                                    </svg>
+                                </span>
+                            </label>
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="new_user_email"
+                                placeholder="Optional"
+                                name="email"
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_user_password" class="form-label"
+                                >Password:
+                                <span
+                                    data-bs-toggle="tooltip"
+                                    data-bs-placement="right"
+                                    title="Bạn có thể bảo vệ những thông tin chi tiêu của mình bằng cách nhập mật khẩu."
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        fill="currentColor"
+                                        class="bi bi-question-circle-fill"
+                                        viewBox="0 0 16 16"
+                                    >
+                                        <path
+                                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247zm2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"
+                                        />
+                                    </svg>
+                                </span>
+                            </label>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="new_user_password"
+                                placeholder="Optional"
+                                name="password"
+                            />
+                        </div>
+                        <button
+                            class="btn btn-outline-primary form-control"
+                            id="btn_new_session"
+                            type="submit"
+                        >
+                            Bắt đầu session mới
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            const txtUserCode = document.getElementById("user_code");
+            // Load default session code
+            let existingEmail = window.localStorage.getItem(
+                "finance-manager::email"
+            );
+            let existingCode = window.localStorage.getItem(
+                "finance-manager::code"
+            );
+
+            // Email have a higher priority
+            if (
+                existingEmail !== undefined ||
+                existingEmail !== "" ||
+                existingEmail !== null
+            ) {
+                txtUserCode.value = existingEmail;
+            } else if (
+                existingCode !== undefined ||
+                existingCode !== "" ||
+                existingCode !== null
+            ) {
+                txtUserCode.value = existingCode;
+            }
+        </script>
+        <script>
+            const loginForm = document.getElementById("login_form");
+            const registerForm = document.getElementById("register_form");
+
+            loginForm.addEventListener("submit", (event) => {
+                event.preventDefault();
+
+                const form = new FormData(loginForm);
+
+                // This could email or user_code
+                const userCode = form.get("user_code");
+
+                const isValidEmail = validateEmail(userCode);
+                const isValidUserCode =
+                    !isBlank(userCode) &&
+                    !(userCode.length !== 6) &&
+                    !isValidEmail;
+                if (!isValidEmail && !isValidUserCode) {
+                    txtUserCode.focus();
+                    alert("Code hoặc email không hợp lệ. Vui lòng nhập lại.");
+                    return;
+                }
+
+                // Get user from server
+                postJSONData(
+                    {
+                        user_code: !isValidEmail ? userCode : "",
+                        email: isValidEmail ? userCode : "",
+                        password: form.get("password"),
+                    },
+                    "users/ping"
+                )
+                    .then((res) => {
+                        if (res.success) {
+                            console.log(res);
+                            // Set user to local storage
+                            if (isValidEmail) {
+                                window.localStorage.setItem(
+                                    "finance-manager::email",
+                                    res.email
+                                );
+                                window.localStorage.setItem(
+                                    "finance-manager::email",
+                                    res.user_code
+                                );
+                            } else {
+                                window.localStorage.setItem(
+                                    "finance-manager::code",
+                                    res.user_code
+                                );
+                                window.localStorage.removeItem(
+                                    "finance-manager::email"
+                                );
+                            }
+
+                            window.location.replace("/views/home.html");
+                        } else {
+                            // Failed alert
+                            // Construct error message
+                            let message = "";
+                            Object.keys(res.error).forEach((key) => {
+                                message += `${res.error[key]}\n`;
+                            });
+                            alert(message);
+                        }
+                    })
+                    .catch((err) => console.log(err));
+            });
+
+            registerForm.addEventListener("submit", (event) => {
+                event.preventDefault();
+                // Create new user session
+                const data = new FormData(registerForm);
+
+                const email = data.get("email");
+                const password = data.get("password");
+
+                postJSONData({ email: email, password: password }, "users/")
+                    .then((res) => {
+                        // Forward user to expenses view with new user code
+                        console.log(res);
+                        window.localStorage.setItem(
+                            "finance-manager::code",
+                            res.user_code
+                        );
+                        window.localStorage.setItem(
+                            "finance-manager::email",
+                            res.email
+                        );
+                        window.location.replace("/views/home.html");
+                    })
+                    .catch((err) => console.log(err));
+            });
+        </script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            crossorigin="anonymous"
+        ></script>
+        <script>
+            var tooltipTriggerList = [].slice.call(
+                document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            );
+            var tooltipList = tooltipTriggerList.map(function (
+                tooltipTriggerEl
+            ) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        </script>
+    </body>
+</html>
