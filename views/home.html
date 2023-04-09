@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col">
                 <p class="h3">Chi tiêu mới</p>
-                <form id="expense_form">
+                    <form id="expense_form">
                     <div id="container"></div>
                     <button type="reset" class="btn btn-outline-primary">Điền lại</button>
                     <button type="submit" class="btn btn-primary">Chi</button>
@@ -39,12 +39,15 @@
                 </div>
             </div>
         </div>
-        <p class="h2">Thống kê</p>
+        <hr>
+        <p class="h2" style="text-align: center;">Thống kê</p>
         <div class="row">
             <div class="col">
                 <canvas id="bar_chart"></canvas>
             </div>
-            <div class="col"></div>
+            <div class="col">
+                <canvas id="line_chart"></canvas>
+            </div>
         </div>
         <button id="btn_logout_session" class="btn shadow p-3 mb-5 bg-body rounded" style="position: fixed; right: 10px; bottom: 0px;" data-bs-toggle="tooltip" data-bs-placement="left" title="Thoát">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-left" viewBox="0 0 16 16">
@@ -55,6 +58,7 @@
     </div>
     <script src="../scripts/forms.js"></script>
     <script src="../scripts/expense.js"></script>
+    <script src="../scripts/statistic.js"></script>
     <script type="module">
         // Create expense form
         let form = document.getElementById('container');
@@ -98,7 +102,6 @@
         }
 
         const tableBody = document.getElementById('expense_table_body');
-        const barChart = document.getElementById('bar_chart');
 
         getExpenses().then((res) => {
             const tablePagination = document.getElementById('table_pagination');
@@ -121,18 +124,20 @@
         });
     </script>
     <script type="module">
-        const result = getExpensesForChart(await getExpenses(), await getCategories());
+        const barChart = document.getElementById('bar_chart');
+        const lineChart = document.getElementById('line_chart');
+        const result = await getStatisticData();
 
         new Chart(barChart, {
             type: 'bar',
             data: {
-            labels: result.labelByCategory,
-            datasets: [{
-                label: 'Tổng tiền theo loại chi tiêu',
-                data: result.amount,
-                borderWidth: 1,
-                backgroundColor: '#0D6EFD',
-            }]
+                labels: Object.keys(result.bar),
+                datasets: [{
+                    label: 'Tổng tiền theo loại chi tiêu',
+                    data: Object.values(result.bar),
+                    borderWidth: 1,
+                    backgroundColor: '#0D6EFD',
+                }]
             },
             options: {
                 scales: {
@@ -142,6 +147,21 @@
                 }
             }
         });
+
+        new Chart(lineChart, {
+            type: 'line',
+            data: {
+                labels: Object.keys(result.line),
+                datasets: [{
+                    label: 'Tổng chi tiêu theo ngày',
+                    data: Object.values(result.line),
+                    borderWidth: 1,
+                    borderColor: '#0D6EFD',
+                    backgroundColor: '#0D6EFD',
+                    tension: 0.1
+                }]
+            }
+        })
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script>

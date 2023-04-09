@@ -7,6 +7,11 @@ let EXPENSES = [];
 let currentExpense = [];
 let currentPage = 1;
 
+/**
+ * Simple validator for creating a new expense
+ * @param {Object} data new expense data
+ * @returns {Boolean} indicate if data is validated
+ */
 function validateNewExpense(data){
     if(!isBlank(data) && !isBlank(data.title) && !isBlank(data.amount) && !isBlank(data.category_id)){
         return true;
@@ -14,6 +19,13 @@ function validateNewExpense(data){
     return false;
 }
 
+/**
+ * Wrapper function to transform data to data suitable for dropdown
+ * @param {Array} data data set which need to be transformed
+ * @param {String} key determine which field is value sent to server
+ * @param {String} value determine which field is value is show for end user
+ * @returns {Array} an array of adapted objects
+ */
 function selectAdapter(data, key, value){
     const adaptedData = []; 
     data.forEach(val => {
@@ -22,18 +34,10 @@ function selectAdapter(data, key, value){
     return adaptedData;
 }
 
-async function getCategories(){
-    let categories = JSON.parse(window.sessionStorage.getItem('finance-manager::categories'));
-
-    if(isBlank(categories)){
-        const data = await getJSONData(categoryUrl);
-        window.sessionStorage.setItem('finance-manager::categories', JSON.stringify(data));
-        return data;
-    } else {
-        return categories;
-    }   
-}
-
+/**
+ * Get all expenses for users
+ * @returns {Array} array of expenses created by request user
+ */
 async function getExpenses(){
     const code = window.localStorage.getItem('finance-manager::code');
 
@@ -47,12 +51,22 @@ async function getExpenses(){
     }
 }
 
+/**
+ * Get expenses for current page. Enable pagination
+ * @param {Number} page page number 
+ * @returns {Array} an array of user expenses
+ */
 function getCurrentExpenses(page=1){
     let start = (page - 1) * PAGE_LIMIT;
     let end = start + PAGE_LIMIT;
     return EXPENSES.slice(start, end);
 }
 
+/**
+ * Create a new expenses
+ * @param {Array} data expense data
+ * @returns {Promise} response indicate request status 
+ */
 async function createExpense(data){
     const isValid = validateNewExpense(data);
     if(!isValid){
@@ -60,26 +74,4 @@ async function createExpense(data){
     }
 
     return await postJSONData(data, expenseUrl);
-}
-
-function getExpensesForChart(data=[], categories=[]){
-    const result = {labelByCategory: [], amount: []};
-    const existingCategories = []; 
-
-    data.forEach((row) => {
-        let index = existingCategories.indexOf(row.category_id);
-        if(index === -1){
-            existingCategories.push(row.category_id);
-
-            let filteredCategory = categories.filter((category) => category.id === row.category_id)[0].name;
-            result.labelByCategory.push(filteredCategory);
-            
-            result.amount[existingCategories.length - 1] = row.amount;
-        }
-        else{
-            result.amount[index] += row.amount;
-        }
-    });
-
-    return result;
 }

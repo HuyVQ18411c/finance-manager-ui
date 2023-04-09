@@ -16,20 +16,21 @@ async function getJSONData(extendUrl=''){
     }
 }
 
-async function postJSONData(data={}, extendUrl='', method='POST'){
+async function postJSONData(data={}, extendUrl=''){
     const REQUEST_URL = BASE_REQUEST_URL + extendUrl;
+    console.log(REQUEST_URL);
     try{
         const response = await fetch(REQUEST_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Token': window.localStorage.getItem('finance-manager::code')
+                'X-Token': window.localStorage.getItem('finance-manager::code'),
             },
             body: JSON.stringify(data)
         });
         return await response.json();
     } catch(error) {
-        console.error('Error', 'Thực hiện yêu cầu thất bại.');
+        console.error('Error', 'Thực hiện yêu cầu thất bại.', error);
     }
 }
 
@@ -57,4 +58,20 @@ function toTitleCase(str) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       }
     );
+}
+
+/**
+ * Get all categories from server
+ * @returns {Array} array of categories object
+ */
+ async function getCategories(){
+    let categories = JSON.parse(window.sessionStorage.getItem('finance-manager::categories'));
+
+    if(isBlank(categories)){
+        const data = await getJSONData(categoryUrl);
+        window.sessionStorage.setItem('finance-manager::categories', JSON.stringify(data));
+        return data;
+    } else {
+        return categories;
+    }   
 }
