@@ -14,7 +14,7 @@
     </head>
     <body>
         <div class="container-md">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-tabs" id="home-nav" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button
                         class="nav-link active"
@@ -23,7 +23,7 @@
                         data-bs-target="#expenses-tab"
                         type="button"
                         role="tab"
-                        aria-controls="home"
+                        aria-controls="expenses-tab"
                         aria-selected="true"
                     >
                         Chi tiêu
@@ -37,7 +37,7 @@
                         data-bs-target="#statistic-tab"
                         type="button"
                         role="tab"
-                        aria-controls="profile"
+                        aria-controls="statistic-tab"
                         aria-selected="false"
                     >
                         Thống kê
@@ -49,7 +49,7 @@
                     class="tab-pane fade show active"
                     id="expenses-tab"
                     role="tabpanel"
-                    aria-labelledby="home-tab"
+                    aria-labelledby="expenses-tab"
                 >
                     <div class="container-md">
                         <div class="d-flex justify-content-end">
@@ -107,7 +107,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="table-responsive">
+                        <div id="expense_table" class="table-responsive">
                             <table
                                 class="table table-striped table-hover table-bordered"
                             >
@@ -130,17 +130,29 @@
                                 </nav>
                             </div>
                         </div>
+                        <div class="invisible" id="no_expenses_message">
+                            Bạn chưa tạo chi tiêu nào.
+                        </div>
                     </div>
                 </div>
                 <div
                     class="tab-pane fade"
                     id="statistic-tab"
                     role="tabpanel"
-                    aria-labelledby="profile-tab"
+                    aria-labelledby="statistic-tab"
                 >
                     <div class="container-md">
-                        <canvas id="bar_chart"></canvas>
-                        <canvas id="line_chart"></canvas>
+                        <div class="row">
+                            <div class="col">
+                                <canvas id="pie_chart"></canvas>
+                            </div>
+                            <div class="col">
+                                <canvas id="line_chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <canvas id="bar_chart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -204,6 +216,7 @@
 
             btnLogout.addEventListener("click", () => {
                 window.localStorage.removeItem("finance-manager::code");
+                window.localStorage.removeItem("finance-manager::email");
                 window.location.replace("/");
             });
         </script>
@@ -215,9 +228,21 @@
                 createExpensesTable(tableBody, getCurrentExpenses(page));
             }
 
+            const expenseTable = document.getElementById("expense_table");
             const tableBody = document.getElementById("expense_table_body");
+            const noExpenseMessage = document.getElementById(
+                "no_expenses_message"
+            );
 
             getExpenses().then((res) => {
+                if (res.length === 0) {
+                    expenseTable.classList.add("invisible");
+                    noExpenseMessage.classList.remove("invisible");
+                } else {
+                    expenseTable.classList.remove("invisible");
+                    noExpenseMessage.classList.add("invisible");
+                }
+
                 const tablePagination =
                     document.getElementById("table_pagination");
                 // Generate first page of pagination
@@ -239,27 +264,29 @@
             });
         </script>
         <script type="module">
-            const barChart = document.getElementById("bar_chart");
+            const pieChart = document.getElementById("pie_chart");
             const lineChart = document.getElementById("line_chart");
+            const barChart = document.getElementById("bar_chart");
+
             const result = await getStatisticData();
 
-            new Chart(barChart, {
+            new Chart(pieChart, {
                 type: "doughnut",
                 data: {
-                    labels: Object.keys(result.bar),
+                    labels: Object.keys(result.pie),
                     datasets: [
                         {
                             label: "Tổng tiền theo loại chi tiêu",
-                            data: Object.values(result.bar),
+                            data: Object.values(result.pie),
                             borderWidth: 1,
                             backgroundColor: [
                                 "#0D6EFD",
                                 "#6f42c1",
                                 "#d63384",
                                 "#fd7e14",
-                                '#20c997',
-                                '#adb5bd',
-                                '#0dcaf0'
+                                "#20c997",
+                                "#adb5bd",
+                                "#0dcaf0",
                             ],
                         },
                     ],
@@ -281,6 +308,23 @@
                         {
                             label: "Tổng chi tiêu theo ngày",
                             data: Object.values(result.line),
+                            borderWidth: 1,
+                            borderColor: "#0D6EFD",
+                            backgroundColor: "#0D6EFD",
+                            tension: 0.1,
+                        },
+                    ],
+                },
+            });
+
+            new Chart(barChart, {
+                type: "bar",
+                data: {
+                    labels: Object.keys(result.bar),
+                    datasets: [
+                        {
+                            label: "Chi tiêu theo tháng",
+                            data: Object.values(result.bar),
                             borderWidth: 1,
                             borderColor: "#0D6EFD",
                             backgroundColor: "#0D6EFD",
