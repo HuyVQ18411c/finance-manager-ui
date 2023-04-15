@@ -133,6 +133,28 @@
                         <div class="invisible" id="no_expenses_message">
                             Bạn chưa tạo chi tiêu nào.
                         </div>
+                        <div id="expense_table" class="table-responsive">
+                            <table
+                                class="table table-striped table-hover table-bordered"
+                            >
+                                <thead>
+                                    <th>STT</th>
+                                    <th>Nguồn thu nhập</th>
+                                    <th>Lượng tiền</th>
+                                    <th>Ngày nhận</th>
+                                    <th>Ghi chú</th>
+                                </thead>
+                                <tbody id="budget_table_body"></tbody>
+                            </table>
+                            <div class="d-flex justify-content-end">
+                                <nav>
+                                    <ul
+                                        class="pagination"
+                                        id="budget_pagination"
+                                    ></ul>
+                                </nav>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div
@@ -148,10 +170,8 @@
                             </div>
                             <div class="col">
                                 <canvas id="line_chart"></canvas>
+                                <canvas id="bar_chart"></canvas>
                             </div>
-                        </div>
-                        <div class="row">
-                            <canvas id="bar_chart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -185,6 +205,7 @@
         </div>
         <script src="../scripts/forms.js"></script>
         <script src="../scripts/expense.js"></script>
+        <script src="../scripts/budget.js"></script>
         <script src="../scripts/statistic.js"></script>
         <script type="module">
             // Create expense form
@@ -198,7 +219,7 @@
 
             expenseForm.addEventListener("submit", (event) => {
                 event.preventDefault();
-                const tableBody = document.getElementById("expense_table_body");
+                const expenseTableBody = document.getElementById("expense_table_body");
                 const formData = new FormData(expenseForm);
 
                 const data = {
@@ -210,7 +231,7 @@
                 };
 
                 createExpense(data).then((res) => {
-                    addExpenseRow(tableBody, res);
+                    addExpenseRow(expenseTableBody, res);
                 });
             });
 
@@ -223,13 +244,18 @@
         <script>
             function goToPage(page = 1) {
                 // Clear the table
-                tableBody.innerHTML = "";
+                expenseTableBody.innerHTML = "";
                 // Populate table with data
-                createExpensesTable(tableBody, getCurrentExpenses(page));
+                createExpensesTable(expenseTableBody, getCurrentExpenses(page));
+            }
+
+            function getCurrentDate(){
+                return new Date();
             }
 
             const expenseTable = document.getElementById("expense_table");
-            const tableBody = document.getElementById("expense_table_body");
+            const expenseTableBody = document.getElementById("expense_table_body");
+            const budgetTableBody = document.getElementById("budget_table_body");
             const noExpenseMessage = document.getElementById(
                 "no_expenses_message"
             );
@@ -246,7 +272,7 @@
                 const tablePagination =
                     document.getElementById("table_pagination");
                 // Generate first page of pagination
-                createExpensesTable(tableBody, getCurrentExpenses());
+                createExpensesTable(expenseTableBody, getCurrentExpenses());
                 const maxPageNumber = Math.ceil(res.length / PAGE_LIMIT);
 
                 for (var i = 1; i <= maxPageNumber; i++) {
@@ -262,6 +288,14 @@
                     tablePagination.appendChild(newElement);
                 }
             });
+
+            getBudgets().then((res) => {
+                if(res.length === 0){
+                    alert('No data found')
+                }
+                createBudgetTable(budgetTableBody, res)
+
+            });
         </script>
         <script type="module">
             const pieChart = document.getElementById("pie_chart");
@@ -273,11 +307,11 @@
             new Chart(pieChart, {
                 type: "doughnut",
                 data: {
-                    labels: Object.keys(result.pie),
+                    labels: Object.keys(result.expenses.pie),
                     datasets: [
                         {
                             label: "Tổng tiền theo loại chi tiêu",
-                            data: Object.values(result.pie),
+                            data: Object.values(result.expenses.pie),
                             borderWidth: 1,
                             backgroundColor: [
                                 "#0D6EFD",
@@ -303,11 +337,11 @@
             new Chart(lineChart, {
                 type: "line",
                 data: {
-                    labels: Object.keys(result.line),
+                    labels: Object.keys(result.expenses.line),
                     datasets: [
                         {
                             label: "Tổng chi tiêu theo ngày",
-                            data: Object.values(result.line),
+                            data: Object.values(result.expenses.line),
                             borderWidth: 1,
                             borderColor: "#0D6EFD",
                             backgroundColor: "#0D6EFD",
@@ -320,11 +354,19 @@
             new Chart(barChart, {
                 type: "bar",
                 data: {
-                    labels: Object.keys(result.bar),
+                    labels: Object.keys(result.expenses.bar),
                     datasets: [
                         {
+                            label: "Thu nhập theo tháng",
+                            data: Object.values(result.budgets.bar),
+                            borderWidth: 1,
+                            borderColor: "#d63384",
+                            backgroundColor: "#d63384",
+                            tension: 0.1,
+                        },
+                        {
                             label: "Chi tiêu theo tháng",
-                            data: Object.values(result.bar),
+                            data: Object.values(result.expenses.bar),
                             borderWidth: 1,
                             borderColor: "#0D6EFD",
                             backgroundColor: "#0D6EFD",

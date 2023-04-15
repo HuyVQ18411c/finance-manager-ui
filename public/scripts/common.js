@@ -18,7 +18,6 @@ async function getJSONData(extendUrl=''){
 
 async function postJSONData(data={}, extendUrl=''){
     const REQUEST_URL = BASE_REQUEST_URL + extendUrl;
-    console.log(REQUEST_URL);
     try{
         const response = await fetch(REQUEST_URL, {
             method: 'POST',
