@@ -33,6 +33,22 @@ async function postJSONData(data={}, extendUrl=''){
     }
 }
 
+async function deleteData(data={}, extendUrl=''){
+    const REQUEST_URL = BASE_REQUEST_URL + extendUrl;
+    try{
+        const response = await fetch(`${REQUEST_URL}${data.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Token': window.localStorage.getItem('finance-manager::code'),
+            },
+        });
+        return await response.json();
+    } catch(error) {
+        console.error('Error', 'Thực hiện yêu cầu thất bại.', error);
+    }
+}
+
 function isBlank(value){
     if(value === null || value === undefined || value === ''){
         return true;

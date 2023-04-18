@@ -75,3 +75,11 @@ async function createExpense(data){
 
     return await postJSONData(data, expenseUrl);
 }
+
+
+async function deleteExpense(id){
+    if(!Number.isInteger(id)){
+        return;
+    }
+    return await deleteData({id: id}, expenseUrl);
+}
