@@ -1,4 +1,4 @@
-const BASE_REQUEST_URL = 'http://127.0.0.1:8000/'
+const BASE_REQUEST_URL = 'http://103.150.124.219:8001/';
 
 
 async function getJSONData(extendUrl=''){
